@@ -4,8 +4,6 @@
 > architecture for designing React systems that eliminate unnecessary
 > `useEffect` usage and enforce correct state-flow design.
 
----
-
 ## 1. Skill Name
 
 **useEffect-cleaned-architecture**
@@ -14,8 +12,6 @@ Identifier: `useEffect-cleaned-architecture`
 Domain: frontend / reactive UI architecture
 Type: cognitive architecture model (reasoning system, not a code generator)
 Scope: applicable to any declarative reactive rendering system; grounded in React.
-
----
 
 ## 2. Skill Definition
 
@@ -66,8 +62,6 @@ synchronization primitive:
   the correct tool and forbids everything outside it.
 - Not a code generator. It produces decisions, not implementations.
 
----
-
 ## 3. Core Principle Model
 
 The skill rests on five non-negotiable principles. Any design that violates
@@ -117,8 +111,6 @@ executed once, at the moment of intent. Routing a user action through state
 respond — delays the response by a render cycle, obscures the causal chain,
 and couples the response to rendering rather than to intent.
 
----
-
 ## 4. State Classification System (CORE ENGINE)
 
 This section is the engine of the skill. Every piece of state in an
@@ -148,8 +140,6 @@ duplicates the cache across components, races on rapid prop changes, and
 cannot participate in background refresh. It is the single most common
 effect abuse.
 
----
-
 ### 4.2 UI State
 
 **Definition.** State local to a component's presentation that has no
@@ -170,8 +160,6 @@ in sync" — e.g., an effect that copies `props.value` into a local
 anti-pattern; the prop already is the value. Reset keyed components by
 remounting (`key={...}`) instead of syncing.
 
----
-
 ### 4.3 Form State
 
 **Definition.** State representing the in-progress values of a form,
@@ -191,8 +179,6 @@ it is not an effect that watches fields and writes errors.
 **Common misuse.** An effect that watches form values and writes computed
 errors into a separate `useState` — a stored-derived-state pattern that
 adds a render cycle and a consistency window per field.
-
----
 
 ### 4.4 Global State
 
@@ -215,8 +201,6 @@ global setter to "push it up." This inverts data flow: the store should be
 the source, and the component should read from it, not write to it as a
 side effect of rendering.
 
----
-
 ### 4.5 Derived State
 
 **Definition.** State that is a pure function of other state, props, or
@@ -236,8 +220,6 @@ in `useState`. Never updated via an effect.
 effect whenever `items` or `filter` changes to recompute. This adds a
 render, introduces a frame where `filteredItems` is stale, and is strictly
 more code than computing it inline.
-
----
 
 ### 4.6 External System State
 
@@ -261,8 +243,6 @@ fetch is not external state — the server owns the data, so it is server
 state (4.1). A setTimeout used to debounce a value is not external state;
 it is derivable via a debounce utility called from the handler or a
 purpose-built hook.
-
----
 
 ## 5. Decision Engine (HOW TO THINK)
 
@@ -316,8 +296,6 @@ Select the minimal mechanism that satisfies the decision, in this priority:
 `useEffect` appears only at rung 5, and only when Stage 3 certified the
 synchronization as external. Any design that reaches rung 5 without Stage 3
 certification is incorrect.
-
----
 
 ## 6. useEffect Governance Rules
 
@@ -374,8 +352,6 @@ The following are categorically forbidden, regardless of whether they
   committed render state may use an effect, but this is rare and must be
   justified per §6.2.)
 
----
-
 ## 7. Correct Architecture Patterns
 
 ### 7.1 Event-driven handlers (primary control flow)
@@ -426,8 +402,6 @@ Cross-tree client facts live in a store with selector-based subscription.
 **Why it is stable:** single owner; components subscribe to slices, so
 unrelated changes do not rerender them; mutations flow through explicit
 actions, not through render-mediated effects.
-
----
 
 ## 8. Anti-Patterns (FAILURE MODES)
 
@@ -481,8 +455,6 @@ under concurrent rendering; the component cannot be safely reused in
 different rendering schedules. **Root cause:** §3.2 violation — state was
 modeled as lifecycle rather than data flow.
 
----
-
 ## 9. Refactoring Heuristics (FIXING BAD CODE)
 
 Deterministic transformation rules. Apply in order; stop when none apply.
@@ -520,8 +492,6 @@ Deterministic transformation rules. Apply in order; stop when none apply.
    business rules to plain functions; call them from handlers. The component
    retains only rendering and state wiring.
 
----
-
 ## 10. Allowed vs Forbidden Matrix
 
 | Concept | Allowed | Forbidden |
@@ -538,8 +508,6 @@ Deterministic transformation rules. Apply in order; stop when none apply.
 | Effect writing state consumed by another effect | never | always |
 | Business logic | in service-layer functions | in components or effects |
 | Lifecycle vocabulary in design | never | "after mount/on prop change do X" |
-
----
 
 ## 11. Real-World Application Mapping
 
@@ -597,8 +565,6 @@ owns values and submission; validation is a derived function of the values
 (computed on submit, or on blur via a handler, or live via a memoized
 selector) — never an effect writing into an errors `useState`. Cross-field
 rules are service-layer functions called from the validation entry point.
-
----
 
 ## 12. Cross-Framework Transferability
 
@@ -668,8 +634,6 @@ computed, never stored.** A system that internalizes §3 and §5 designs
 correctly in any of the above. A system that reaches for the local
 equivalent of `useEffect` to express anything other than external
 synchronization is incorrect, regardless of framework.
-
----
 
 ## End of Specification
 
