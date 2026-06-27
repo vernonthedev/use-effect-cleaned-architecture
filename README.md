@@ -1,4 +1,4 @@
-# useEffect-cleaned-architecture
+# UseEffect Cleaned Architecture
 
 A formal engineering skill that eliminates unnecessary `useEffect` usage in React by enforcing correct state-flow design. It is a reasoning standard, not a code generator, lint rule, or scaffold.
 
